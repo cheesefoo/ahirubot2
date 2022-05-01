@@ -53,7 +53,7 @@ export class Bot {
             status: 'online',
             activities: [{
                 name: 'Subaru',
-                type: 1,
+                type: 'WATCHING',
                 url: 'https://www.youtube.com/channel/UCvzGlP9oQwU--Y0r9id_jnA/live'
             }]
         })
