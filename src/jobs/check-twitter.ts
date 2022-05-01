@@ -1,13 +1,14 @@
 // const Twitter = require('twitter-v2');
-import { createRequire } from 'node:module';
+import {createRequire} from 'node:module';
 import Twitter from 'twitter-v2';
-import { Response } from 'node-fetch';
-import { Logger } from '../services';
-import { MessageUtils, DatabaseUtils } from '../utils';
-import { Job } from './job';
+import {Response} from 'node-fetch';
+import {Logger} from '../services';
+import {MessageUtils, DatabaseUtils} from '../utils';
+import {Job} from './job';
 
-import { Client, TextChannel, User } from 'discord.js';
-import { TwitterSpaceUtils } from '../utils/twitter-space-utils';
+import {Client, TextChannel, User} from 'discord.js';
+import {TwitterSpaceUtils} from '../utils/twitter-space-utils';
+
 const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
 let Logs = require('../../lang/logs.json');
@@ -22,12 +23,15 @@ let checks = [
     [subaId, broadcastChannel],
     // [uimamaId, broadcastChannel2],
 ];
+
 export class CheckTwitter implements Job {
     public name = 'Check Twitter';
     public schedule: string = Config.jobs.checkTwitter.schedule;
     public log: boolean = Config.jobs.checkTwitter.log;
 
-    constructor(private client: Client) {}
+    constructor(private client: Client) {
+    }
+
     //subastream
 
     //test
@@ -44,7 +48,7 @@ export class CheckTwitter implements Job {
 
         checks.forEach(async ([id, channel]) => {
             let endPt = `https://api.twitter.com/2/spaces/by/creator_ids?user_ids=${id}`;
-            let res = await twitter.get<Response>('spaces/by/creator_ids', { user_ids: id });
+            let res = await twitter.get<Response>('spaces/by/creator_ids', {user_ids: id});
 
             //There is a live space
             if (res['meta']['result_count'] != 0) {
@@ -60,7 +64,7 @@ export class CheckTwitter implements Job {
                         let ch: TextChannel = this.client.channels.cache.get(
                             channel
                         ) as TextChannel;
-                        await MessageUtils.send(ch, { embeds: [embed] });
+                        await MessageUtils.send(ch, {embeds: [embed]});
                         let metadata = await TwitterSpaceUtils.GetMetadata(spaceId);
                         let url = await TwitterSpaceUtils.GetURL(metadata);
                         let user: User = this.client.users.cache.get('118387143952302083');
@@ -85,7 +89,7 @@ export class CheckTwitter implements Job {
         let embed = {
             color: 0x1da1f2,
 
-            title: `Subaru Twitter Space started! (auto-recording NYI)`,
+            title: `Subaru Twitter Space started!`,
             url: listenUrl,
         };
         return embed;

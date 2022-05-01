@@ -12,14 +12,10 @@ export class DatabaseUtils {
 
         try {
             let res = await client.query(`SELECT * from ${table} WHERE shortcode='${shortcode}'`);
-            if (res.rows.length == 0) {
-                return false;
-            } else {
-                return true;
-            }
+            return res.rows.length != 0;
         }
         catch (error) {
-            Logger.error(Logs.error.database.replace('{DB}', table), error);
+            await Logger.error(Logs.error.database.replace('{DB}', table), error);
             throw error;
         }
         finally {
@@ -32,7 +28,8 @@ export class DatabaseUtils {
             let res = await client.query(`INSERT INTO ${table} (shortcode, url) VALUES('${shortcode}', '${url}')`);
         }
         catch (error) {
-            Logger.error(Logs.error.database.replace('{DB}', table), error);
+            await Logger.error(Logs.error.database.replace('{DB}', table), error);
+            throw error;
         }
         finally {
             client.end();
@@ -62,7 +59,7 @@ export class DatabaseUtils {
             return "true" === setting;
         }
         catch (error) {
-            Logger.error(Logs.error.database.replace('{DB}', 'settings'), error);
+            await Logger.error(Logs.error.database.replace('{DB}', 'settings'), error);
         }
         finally {
             client.end();
@@ -76,7 +73,7 @@ export class DatabaseUtils {
 
         }
         catch (error) {
-            Logger.error(Logs.error.database.replace('{DB}', 'settings'), error);
+            await Logger.error(Logs.error.database.replace('{DB}', 'settings'), error);
         }
         finally {
             client.end();
@@ -97,7 +94,7 @@ export class DatabaseUtils {
         try {
             client.connect();
         } catch (error) {
-            Logger.error(Logs.error.database.replace('{DB}', "database"), error);
+            await Logger.error(Logs.error.database.replace('{DB}', "database"), error);
         }
         return client;
     }

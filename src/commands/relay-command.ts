@@ -83,6 +83,7 @@ export class RelayCommand implements Command {
         } else if (arg2 === 'off') {
             await DatabaseUtils.SetRelaySetting(false);
         }
+        Logger.info(`relay ${arg2}`)
         await MessageUtils.send(msg.channel, `relay ${arg2}`);
     }
 
