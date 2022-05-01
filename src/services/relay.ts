@@ -42,7 +42,8 @@ export class Relay
             this.tldex.on(`${videoId}/en`, async msg =>
             {
                 Logger.info(`Received a message in ${videoId}: ${JSON.stringify(msg)}`);
-                let shouldRelay = await DatabaseUtils.GetRelaySetting();
+                // let shouldRelay = await DatabaseUtils.GetRelaySetting();
+                let shouldRelay = true;
                 if (!shouldRelay)
                     return;
 
