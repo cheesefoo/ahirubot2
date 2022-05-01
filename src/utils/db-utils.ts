@@ -20,6 +20,7 @@ export class DatabaseUtils {
         }
         catch (error) {
             Logger.error(Logs.error.database.replace('{DB}', table), error);
+            throw error;
         }
         finally {
             client.end();

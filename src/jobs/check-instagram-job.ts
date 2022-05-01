@@ -1,11 +1,12 @@
-import fetch, { HeadersInit } from 'node-fetch';
-import { createRequire } from 'node:module';
-import { BotSite } from '../models/config-models';
-import { HttpService, Lang, Logger } from '../services';
-import { DatabaseUtils, MessageUtils, ShardUtils } from '../utils';
-import { Job } from './job';
+import fetch, {HeadersInit} from 'node-fetch';
+import {createRequire} from 'node:module';
+import {BotSite} from '../models/config-models';
+import {HttpService, Lang, Logger} from '../services';
+import {DatabaseUtils, MessageUtils, ShardUtils} from '../utils';
+import {Job} from './job';
 
-import { Channel, Client, Collection, Guild, GuildMember, TextChannel } from 'discord.js';
+import {Channel, Client, Collection, Guild, GuildMember, TextChannel} from 'discord.js';
+
 const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
 let Logs = require('../../lang/logs.json');
@@ -23,7 +24,9 @@ export class CheckInstagram implements Job {
     private username: string = 'oozorasubaru';
     private broadcastChannel = '722253549270204627';
     private url: string = `https://www.instagram.com/${this.username}/feed/?__a=1`;
-    constructor(private client: Client) {}
+
+    constructor(private client: Client) {
+    }
 
     public async run(): Promise<void> {
         try {
@@ -39,7 +42,7 @@ export class CheckInstagram implements Job {
             const shortcode =
                 json['graphql']['user']['edge_owner_to_timeline_media']['edges'][0]['node'][
                     'shortcode'
-                ];
+                    ];
             if (await DatabaseUtils.CheckIfExists('INSTAGRAM', shortcode)) {
                 Logger.trace(Logs.info.instagram.replace('{SC}', shortcode));
             } else {
@@ -52,7 +55,7 @@ export class CheckInstagram implements Job {
                 let ch: TextChannel = this.client.channels.cache.get(
                     this.broadcastChannel
                 ) as TextChannel;
-                MessageUtils.send(ch, { embeds: [embed] });
+                MessageUtils.send(ch, {embeds: [embed]});
             }
         } catch (error) {
             Logger.error(Logs.error.job.replace('{JOB}', 'CheckInstagram'), error);
@@ -72,7 +75,7 @@ export class CheckInstagram implements Job {
             url: `https://www.instagram.com/p/${shortcode}/`,
 
             description: desc ?? '',
-            image: { url: node['thumbnail_src'] },
+            image: {url: node['thumbnail_src']},
             thumbnail: {
                 url: pfp,
             },

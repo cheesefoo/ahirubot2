@@ -1,11 +1,11 @@
-import { ApplicationCommandData, BaseCommandInteraction, Message, PermissionString } from 'discord.js';
-import { HolodexApiClient } from 'holodex.js';
-import { createRequire } from 'node:module';
-import { LangCode } from '../models/enums';
-import { EventData } from '../models/internal-models';
-import { Lang } from '../services';
-import { DatabaseUtils, MessageUtils } from '../utils';
-import { Command, CommandDeferType } from './command';
+import {ApplicationCommandData, BaseCommandInteraction, Message, PermissionString} from 'discord.js';
+import {HolodexApiClient} from 'holodex.js';
+import {createRequire} from 'node:module';
+import {LangCode} from '../models/enums';
+import {EventData} from '../models/internal-models';
+import {Lang} from '../services';
+import {DatabaseUtils, MessageUtils} from '../utils';
+import {Command, CommandDeferType} from './command';
 
 const require = createRequire(import.meta.url);
 
@@ -13,27 +13,23 @@ let Config = require('../../config/config.json');
 
 // let template = require("../../static/template.png");
 
-export class RelayCommand implements Command
-{
+export class RelayCommand implements Command {
     public requireDev = false;
     public requireGuild = false;
     public requirePerms = ['KICK_MEMBERS'];
     private relayService;
-    private holodexClient :HolodexApiClient;
+    private holodexClient: HolodexApiClient;
 
-    constructor(holodexClient, relayService)
-    {
+    constructor(holodexClient, relayService) {
         this.holodexClient = holodexClient;
         this.relayService = relayService;
     }
 
-    public keyword(langCode: LangCode): string
-    {
+    public keyword(langCode: LangCode): string {
         return Lang.getRef('commands.relay', langCode);
     }
 
-    public regex(langCode: LangCode): RegExp
-    {
+    public regex(langCode: LangCode): RegExp {
         return Lang.getRegex('commandRegexes.relay', langCode);
     }
 
@@ -51,49 +47,41 @@ export class RelayCommand implements Command
     requireClientPerms: PermissionString[] = [];
     requireUserPerms: PermissionString[] = [];
 
-    public async execute(intr: BaseCommandInteraction, data: EventData): Promise<void>
-    {
+    public async execute(intr: BaseCommandInteraction, data: EventData): Promise<void> {
 
 
     }
 
-    public async executeMessage(msg: Message, args: string[], data: EventData): Promise<void>
-    {
-        if (args.length === 2)
-        {
+    public async executeMessage(msg: Message, args: string[], data: EventData): Promise<void> {
+        if (args.length === 2) {
             return;
         }
 
         let arg2 = args[2];
-        if (arg2 === 'add')
-        {
+        if (arg2 === 'add') {
             let videoId = args[3];
-            let holodexResp = await this.holodexClient.getLiveVideos({id:videoId,
+            let holodexResp = await this.holodexClient.getLiveVideos({
+                id: videoId,
 
             });
-            if(holodexResp.length!=1){
-                MessageUtils.send(msg.channel,`couldn't find \`${videoId}\` on holodex :(`);
+            if (holodexResp.length != 1) {
+                MessageUtils.send(msg.channel, `couldn't find \`${videoId}\` on holodex :(`);
                 return;
             }
             this.relayService.setupLive(holodexResp[0]);
             let reply = `yes master...`
-            if(msg.author.id == '614280577687748610' )
-            {
+            if (msg.author.id == '614280577687748610') {
                 reply = '...はい、お兄ちゃん'
             }
-            MessageUtils.send(msg.channel,reply);
+            await MessageUtils.send(msg.channel, reply);
+            return;
 
         }
 
-        if (arg2 === 'on')
-        {
+        if (arg2 === 'on') {
             await DatabaseUtils.SetRelaySetting(true);
-        } else if (arg2 === 'off')
-        {
+        } else if (arg2 === 'off') {
             await DatabaseUtils.SetRelaySetting(false);
-        } else
-        {
-            return;
         }
         await MessageUtils.send(msg.channel, `relay ${arg2}`);
     }
