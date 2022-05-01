@@ -54,7 +54,7 @@ export class ApiUtils {
                 text: text,
                 source_lang: 'EN',
                 target_lang: 'JA',
-                auth_key: Config.deepl.key,
+                auth_key: process.env.deepl_key,
                 free_api: true,
             })
                 .then(resp => resp.data.translations[0].text)
