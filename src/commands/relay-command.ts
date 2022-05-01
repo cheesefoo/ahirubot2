@@ -3,7 +3,7 @@ import {HolodexApiClient} from 'holodex.js';
 import {createRequire} from 'node:module';
 import {LangCode} from '../models/enums';
 import {EventData} from '../models/internal-models';
-import {Lang} from '../services';
+import {Lang, Logger} from '../services';
 import {DatabaseUtils, MessageUtils} from '../utils';
 import {Command, CommandDeferType} from './command';
 
