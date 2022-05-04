@@ -62,7 +62,7 @@ export class DeepLCommand implements Command {
                 );
                 return;
             }
-            let tl = await this.GetTranslation(text);
+            let tl = await ApiUtils.GetTranslation(text);
             if (tl != undefined) {
                 await InteractionUtils.send(intr, tl, false);
                 return;
