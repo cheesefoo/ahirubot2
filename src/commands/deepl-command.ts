@@ -136,20 +136,12 @@ export class DeepLCommand implements Command {
         }
 
         const emoji = msg.client.emojis.cache.find(e => e.name === 'deepl');
-        let tl = await this.GetTranslation(text);
+        let tl = await ApiUtils.GetTranslation(text);
         if (tl != undefined) {
             tl = `${emoji}:${tl}`;
         }
         await MessageUtils.send(msg.channel, tl);
     }
 
-    private async GetTranslation(text: string): Promise<string> {
-        let resp = await translate({
-            text: text,
-            target_lang: 'EN',
-            auth_key: process.env.deepl_key,
-            free_api: true,
-        });
-        return await ApiUtils.ParseTranslations(resp.data.translations[0]);
-    }
+
 }

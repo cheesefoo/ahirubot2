@@ -2,7 +2,7 @@ import { Client, TextChannel } from 'discord.js';
 import { Video } from 'holodex.js';
 import { io } from 'socket.io-client';
 
-import { DatabaseUtils, MessageUtils } from '../utils';
+import {ApiUtils, DatabaseUtils, MessageUtils} from '../utils';
 import { Logger } from './logger';
 
 export class Relay
@@ -62,7 +62,13 @@ export class Relay
                     if (cmt.isV || cmt.isTl)
                     {
                         let shorttime = cmt.time.toString().substring(0, 10);
-                        await MessageUtils.send(ch, `<t:${shorttime}:t>\` ${cmt.name}: ${cmt.body}\``);
+                        let content = `<t:${shorttime}:t>\` ${cmt.name}: ${cmt.body}\``;
+                        if (cmt.isV)
+                        {
+                            content.concat("\n",await ApiUtils.GetTranslation(cmt.body));
+
+                        }
+                        await MessageUtils.send(ch, content);
                     }
 
                 } else if (msg.type === 'end')

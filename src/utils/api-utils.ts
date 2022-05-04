@@ -41,7 +41,15 @@ export class ApiUtils {
         }
         return result.fullTextAnnotation?.text;
     }
-
+    public static async GetTranslation(text: string): Promise<string> {
+        let resp = await translate({
+            text: text,
+            target_lang: 'EN',
+            auth_key: process.env.deepl_key,
+            free_api: true,
+        });
+        return await ApiUtils.ParseTranslations(resp.data.translations[0]);
+    }
     public static async ParseTranslations(translations: {
         detected_source_language: string;
         text: string;
