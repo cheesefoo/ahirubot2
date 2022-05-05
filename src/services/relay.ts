@@ -15,7 +15,6 @@ export class Relay {
     }
 
     public async start(): Promise<void> {
-        let ch = this.client.channels.cache.get(this.broadcastCh) as TextChannel;
 
         this.tldex = io('wss://holodex.net', {
             path: '/api/socket.io/', transports: ['websocket'],
@@ -28,6 +27,8 @@ export class Relay {
 
         });
         this.tldex.on('subscribeSuccess', async msg => {
+
+            let ch = this.client.channels.cache.get(this.broadcastCh) as TextChannel;
             Logger.info('subscribeSuccess ' + JSON.stringify(msg));
             let videoId = msg.id;
             this.subscribedVideos.push(videoId);
