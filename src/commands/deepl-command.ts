@@ -1,4 +1,3 @@
-import translate from 'deepl';
 import {
     Collection,
     Message,
@@ -6,13 +5,13 @@ import {
     MessageContextMenuInteraction,
     PermissionString,
 } from 'discord.js';
-import { RateLimiter } from 'discord.js-rate-limiter';
-import { createRequire } from 'node:module';
-import { LangCode } from '../models/enums';
-import { EventData } from '../models/internal-models';
-import { Lang } from '../services';
-import { ApiUtils, InteractionUtils, MessageUtils } from '../utils';
-import { Command, CommandDeferType } from './command';
+import {RateLimiter} from 'discord.js-rate-limiter';
+import {createRequire} from 'node:module';
+import {LangCode} from '../models/enums';
+import {EventData} from '../models/internal-models';
+import {Lang} from '../services';
+import {ApiUtils, InteractionUtils, MessageUtils} from '../utils';
+import {Command, CommandDeferType} from './command';
 
 const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
@@ -98,9 +97,22 @@ export class DeepLCommand implements Command {
     }
 
     public async executeMessage(msg: Message, args: string[], data: EventData): Promise<void> {
-        let url = await MessageUtils.getUrl(msg, args);
 
         let text;
+        if (msg.type == "REPLY") {
+            const repliedTo = await msg.channel.messages.fetch(msg.reference.messageId);
+
+            text = repliedTo.content;
+
+            const emoji = msg.client.emojis.cache.find(e => e.name === 'deepl');
+            let tl = await ApiUtils.GetTranslation(text);
+            if (tl != undefined) {
+                tl = `${emoji}:${tl}`;
+            }
+            await MessageUtils.send(msg.channel, tl);
+            return;
+        }
+        let url = await MessageUtils.getUrl(msg, args);
         if (url == undefined && args.length === 2) {
             await MessageUtils.send(
                 msg.channel,
