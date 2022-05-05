@@ -54,7 +54,12 @@ export class Relay {
                         let shorttime = cmt.time.toString().substring(0, 10);
                         let content = `<t:${shorttime}:t>\` ${cmt.name}: ${cmt.body}\``;
                         if (cmt.isV) {
-                            content.concat("\n", await ApiUtils.GetTranslation(cmt.body));
+                            const emoji = msg.client.emojis.cache.find(e => e.name === 'deepl');
+                            let tl = await ApiUtils.GetTranslation(cmt.body);
+                            if (tl != undefined) {
+                                tl = `${emoji}:${tl}`;
+                            }
+                            content.concat("\n",tl);
 
                         }
                         await MessageUtils.send(ch, content);
