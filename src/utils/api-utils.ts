@@ -2,6 +2,7 @@ import { ImageAnnotatorClient } from '@google-cloud/vision';
 import { google } from '@google-cloud/vision/build/protos/protos';
 import translate from 'deepl';
 import { createRequire } from 'node:module';
+import imageToBase64 from 'image-to-base64';
 
 const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
@@ -16,11 +17,14 @@ export class ApiUtils {
             credentials: { client_email: process.env.google_email, private_key: googleApiKey },
         };
         const client = new ImageAnnotatorClient(options);
+        const base64 = await imageToBase64(url)
+
         const request = {
             image: {
-                source: {
-                    imageUri: `${url}`,
-                },
+                content: `${base64}`
+                // source: {
+                    // imageUri: `${url}`,
+                // },
             },
             // "features": [{ "type": "TEXT_DETECTION" }],
             imageContext: {
@@ -34,6 +38,7 @@ export class ApiUtils {
             requests: [request],
         };
 
+        // @ts-ignore
         const [result] = await client.textDetection(request);
         let hasError = result?.error?.message;
         if (hasError) {
