@@ -35,7 +35,7 @@ export class DeepLCommand implements Command {
 
     public async execute(intr: MessageContextMenuInteraction, data: EventData): Promise<void> {
         // throw new Error('Method not implemented.');
-
+/*
         await intr.deferReply();
         let attachments = intr.targetMessage.attachments;
         let len: number = attachments instanceof Collection ? attachments.size : attachments.length;
@@ -85,7 +85,7 @@ export class DeepLCommand implements Command {
                 );
                 return;
             }
-        }
+        }*/
     }
 
     public keyword(langCode: LangCode): string {

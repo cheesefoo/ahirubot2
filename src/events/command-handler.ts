@@ -1,5 +1,4 @@
 import {
-    BaseCommandInteraction,
     CommandInteraction,
     GuildMember,
     Message,
@@ -8,15 +7,15 @@ import {
     TextChannel,
     ThreadChannel,
 } from 'discord.js';
-import { RateLimiter } from 'discord.js-rate-limiter';
-import { createRequire } from 'node:module';
+import {RateLimiter} from 'discord.js-rate-limiter';
+import {createRequire} from 'node:module';
 
-import { Command, CommandDeferType } from '../commands';
-import { LangCode } from '../models/enums';
-import { EventData } from '../models/internal-models.js';
-import { Lang, Logger } from '../services';
-import { CommandUtils, InteractionUtils, MessageUtils, PermissionUtils } from '../utils';
-import { EventHandler } from './index.js';
+import {Command, CommandDeferType} from '../commands';
+import {LangCode} from '../models/enums';
+import {EventData} from '../models/internal-models.js';
+import {Lang, Logger} from '../services';
+import {CommandUtils, InteractionUtils, MessageUtils, PermissionUtils} from '../utils';
+import {EventHandler} from './index.js';
 
 const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
@@ -34,7 +33,8 @@ export class CommandHandler implements EventHandler {
         private prefix: string,
         private helpCommand: Command,
         private commands: Command[]
-    ) {}
+    ) {
+    }
 
     public shouldHandle(msg: Message, args: string[]): boolean {
         if (args[0].startsWith(this.prefix + this.prefix)) {
@@ -52,11 +52,12 @@ export class CommandHandler implements EventHandler {
         );
     }
 
-    public async process(intr: BaseCommandInteraction): Promise<void> {
+    public async process(intr: CommandInteraction): Promise<void> {
         // Don't respond to self, or other bots
         if (intr.user.id === intr.client.user?.id || intr.user.bot) {
             return;
         }
+
         // Check if user is rate limited
         let limited = this.rateLimiter.take(intr.user.id);
         if (limited) {
@@ -108,22 +109,22 @@ export class CommandHandler implements EventHandler {
             // Log command error
             Logger.error(
                 intr.channel instanceof TextChannel ||
-                    intr.channel instanceof NewsChannel ||
-                    intr.channel instanceof ThreadChannel
+                intr.channel instanceof NewsChannel ||
+                intr.channel instanceof ThreadChannel
                     ? Logs.error.commandGuild
-                          .replaceAll('{INTERACTION_ID}', intr.id)
-                          .replaceAll('{COMMAND_NAME}', command.metadata.name)
-                          .replaceAll('{USER_TAG}', intr.user.tag)
-                          .replaceAll('{USER_ID}', intr.user.id)
-                          .replaceAll('{CHANNEL_NAME}', intr.channel.name)
-                          .replaceAll('{CHANNEL_ID}', intr.channel.id)
-                          .replaceAll('{GUILD_NAME}', intr.guild?.name)
-                          .replaceAll('{GUILD_ID}', intr.guild?.id)
+                        .replaceAll('{INTERACTION_ID}', intr.id)
+                        .replaceAll('{COMMAND_NAME}', command.metadata.name)
+                        .replaceAll('{USER_TAG}', intr.user.tag)
+                        .replaceAll('{USER_ID}', intr.user.id)
+                        .replaceAll('{CHANNEL_NAME}', intr.channel.name)
+                        .replaceAll('{CHANNEL_ID}', intr.channel.id)
+                        .replaceAll('{GUILD_NAME}', intr.guild?.name)
+                        .replaceAll('{GUILD_ID}', intr.guild?.id)
                     : Logs.error.commandOther
-                          .replaceAll('{INTERACTION_ID}', intr.id)
-                          .replaceAll('{COMMAND_NAME}', command.metadata.name)
-                          .replaceAll('{USER_TAG}', intr.user.tag)
-                          .replaceAll('{USER_ID}', intr.user.id),
+                        .replaceAll('{INTERACTION_ID}', intr.id)
+                        .replaceAll('{COMMAND_NAME}', command.metadata.name)
+                        .replaceAll('{USER_TAG}', intr.user.tag)
+                        .replaceAll('{USER_ID}', intr.user.id),
                 error
             );
         }
@@ -207,24 +208,39 @@ export class CommandHandler implements EventHandler {
             // Log command error
             Logger.error(
                 msg.channel instanceof TextChannel ||
-                    msg.channel instanceof NewsChannel ||
-                    msg.channel instanceof ThreadChannel
+                msg.channel instanceof NewsChannel ||
+                msg.channel instanceof ThreadChannel
                     ? Logs.error.commandGuild
-                          .replaceAll('{MESSAGE_ID}', msg.id)
-                          .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
-                          .replaceAll('{USER_TAG}', msg.author.tag)
-                          .replaceAll('{USER_ID}', msg.author.id)
-                          .replaceAll('{CHANNEL_NAME}', msg.channel.name)
-                          .replaceAll('{CHANNEL_ID}', msg.channel.id)
-                          .replaceAll('{GUILD_NAME}', msg.guild.name)
-                          .replaceAll('{GUILD_ID}', msg.guild.id)
+                        .replaceAll('{MESSAGE_ID}', msg.id)
+                        .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
+                        .replaceAll('{USER_TAG}', msg.author.tag)
+                        .replaceAll('{USER_ID}', msg.author.id)
+                        .replaceAll('{CHANNEL_NAME}', msg.channel.name)
+                        .replaceAll('{CHANNEL_ID}', msg.channel.id)
+                        .replaceAll('{GUILD_NAME}', msg.guild.name)
+                        .replaceAll('{GUILD_ID}', msg.guild.id)
                     : Logs.error.commandOther
-                          .replaceAll('{MESSAGE_ID}', msg.id)
-                          .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
-                          .replaceAll('{USER_TAG}', msg.author.tag)
-                          .replaceAll('{USER_ID}', msg.author.id),
+                        .replaceAll('{MESSAGE_ID}', msg.id)
+                        .replaceAll('{COMMAND_KEYWORD}', command.keyword(Lang.Default))
+                        .replaceAll('{USER_TAG}', msg.author.tag)
+                        .replaceAll('{USER_ID}', msg.author.id),
                 error
             );
+        }
+    }
+
+    private async sendError(intr: CommandInteraction, data: EventData): Promise<void> {
+        try {
+            await InteractionUtils.send(
+                intr,
+                Lang.getEmbed('errorEmbeds.command', data.lang(), {
+                    ERROR_CODE: intr.id,
+                    GUILD_ID: intr.guild?.id ?? Lang.getRef('other.na', data.lang()),
+                    SHARD_ID: (intr.guild?.shardId ?? 0).toString(),
+                })
+            );
+        } catch {
+            // Ignore
         }
     }
 
@@ -254,16 +270,4 @@ export class CommandHandler implements EventHandler {
         return true;
     }
 
-    private async sendError(intr: BaseCommandInteraction, data: EventData): Promise<void> {
-        try {
-            await InteractionUtils.send(
-                intr,
-                Lang.getEmbed('errorEmbeds.command', data.lang(), {
-                    ERROR_CODE: intr.id,
-                })
-            );
-        } catch {
-            // Ignore
-        }
-    }
 }

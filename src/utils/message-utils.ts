@@ -1,4 +1,4 @@
-import { RESTJSONErrorCodes as DiscordApiErrors } from 'discord-api-types/v9';
+import {RESTJSONErrorCodes as DiscordApiErrors} from 'discord-api-types/v9';
 import {
     DiscordAPIError,
     EmojiResolvable,
@@ -6,11 +6,13 @@ import {
     MessageEmbed,
     MessageOptions,
     MessageReaction,
+    StartThreadOptions,
     TextBasedChannel,
+    ThreadChannel,
     User,
 } from 'discord.js';
-import { EmbedUtils } from './embed-utils';
-import { UrlUtils } from './url-utils';
+import {EmbedUtils} from './embed-utils';
+import {UrlUtils} from './url-utils';
 
 const IGNORED_ERRORS = [
     DiscordApiErrors.UnknownMessage,
@@ -28,7 +30,12 @@ export class MessageUtils {
         content: string | MessageEmbed | MessageOptions
     ): Promise<Message> {
         try {
-            let msgOptions = this.messageOptions(content);
+            let msgOptions: MessageOptions =
+                typeof content === 'string'
+                    ? {content}
+                    : content instanceof MessageEmbed
+                        ? {embeds: [content]}
+                        : content;
             return await target.send(msgOptions);
         } catch (error) {
             if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
@@ -44,7 +51,12 @@ export class MessageUtils {
         content: string | MessageEmbed | MessageOptions
     ): Promise<Message> {
         try {
-            let msgOptions = this.messageOptions(content);
+            let msgOptions: MessageOptions =
+                typeof content === 'string'
+                    ? {content}
+                    : content instanceof MessageEmbed
+                        ? {embeds: [content]}
+                        : content;
             return await msg.reply(msgOptions);
         } catch (error) {
             if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
@@ -54,6 +66,7 @@ export class MessageUtils {
             }
         }
     }
+
     public static content(msg: Message): string {
         return [
             msg.content,
@@ -68,7 +81,12 @@ export class MessageUtils {
         content: string | MessageEmbed | MessageOptions
     ): Promise<Message> {
         try {
-            let msgOptions = this.messageOptions(content);
+            let msgOptions: MessageOptions =
+                typeof content === 'string'
+                    ? {content}
+                    : content instanceof MessageEmbed
+                        ? {embeds: [content]}
+                        : content;
             return await msg.edit(msgOptions);
         } catch (error) {
             if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
@@ -78,6 +96,7 @@ export class MessageUtils {
             }
         }
     }
+
     public static async getEmbedUrl(msg: Message): Promise<string> {
         let embedUrl;
         msg.attachments.forEach(a => {
@@ -89,6 +108,7 @@ export class MessageUtils {
         });
         return embedUrl;
     }
+
     public static async getUrl(msg: Message, args: string[]): Promise<string> | undefined {
         //add delay cause discord/google is too slow/fast
         await new Promise(r => setTimeout(r, 3000));
@@ -111,6 +131,45 @@ export class MessageUtils {
         }
     }
 
+    public static async pin(msg: Message): Promise<Message> {
+        try {
+            return await msg.pin();
+        } catch (error) {
+            if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
+                return;
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    public static async unpin(msg: Message): Promise<Message> {
+        try {
+            return await msg.unpin();
+        } catch (error) {
+            if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
+                return;
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    public static async startThread(
+        msg: Message,
+        options: StartThreadOptions
+    ): Promise<ThreadChannel> {
+        try {
+            return await msg.startThread(options);
+        } catch (error) {
+            if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
+                return;
+            } else {
+                throw error;
+            }
+        }
+    }
+
     public static async delete(msg: Message): Promise<Message> {
         try {
             return await msg.delete();
@@ -123,15 +182,5 @@ export class MessageUtils {
         }
     }
 
-    public static messageOptions(content: string | MessageEmbed | MessageOptions): MessageOptions {
-        let options: MessageOptions = {};
-        if (typeof content === 'string') {
-            options.content = content;
-        } else if (content instanceof MessageEmbed) {
-            options.embeds = [content];
-        } else {
-            options = content;
-        }
-        return options;
-    }
+
 }

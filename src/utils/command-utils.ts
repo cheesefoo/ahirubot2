@@ -20,8 +20,8 @@ let Debug = require('../../config/debug.json');
 export class CommandUtils {
     public static async runChecks(
         command: Command,
-        intr: BaseCommandInteraction,
-        // intr: CommandInteraction,
+        // intr: BaseCommandInteraction,
+        intr: CommandInteraction,
         data: EventData
     ): Promise<boolean> {
         if (command.cooldown) {

@@ -2,13 +2,13 @@ import { RESTJSONErrorCodes as DiscordApiErrors } from 'discord-api-types/v9';
 import {
     BaseCommandInteraction,
     CommandInteraction,
-    DiscordAPIError,
+    DiscordAPIError, InteractionReplyOptions, InteractionUpdateOptions,
     Message,
     MessageComponentInteraction,
     MessageContextMenuInteraction,
     MessageEmbed,
     MessageInteraction,
-    MessageOptions,
+    MessageOptions, WebhookEditMessageOptions,
 } from 'discord.js';
 
 import { MessageUtils } from './index.js';
@@ -55,17 +55,29 @@ export class InteractionUtils {
     }
 
     public static async send(
-        intr: BaseCommandInteraction,
-        // intr: CommandInteraction | MessageComponentInteraction | MessageContextMenuInteraction,
-        content: string | MessageEmbed | MessageOptions,
+        intr: CommandInteraction | MessageComponentInteraction,
+        content: string | MessageEmbed | InteractionReplyOptions,
         hidden: boolean = false
     ): Promise<Message> {
         try {
-            let msgOptions = MessageUtils.messageOptions(content);
-            return (await intr.followUp({
-                ...msgOptions,
-                ephemeral: hidden,
-            })) as Message;
+            let options: InteractionReplyOptions =
+                typeof content === 'string'
+                    ? { content }
+                    : content instanceof MessageEmbed
+                        ? { embeds: [content] }
+                        : content;
+            if (intr.deferred || intr.replied) {
+                return (await intr.followUp({
+                    ...options,
+                    ephemeral: hidden,
+                })) as Message;
+            } else {
+                return (await intr.reply({
+                    ...options,
+                    ephemeral: hidden,
+                    fetchReply: true,
+                })) as Message;
+            }
         } catch (error) {
             if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
                 return;
@@ -77,13 +89,16 @@ export class InteractionUtils {
 
     public static async editReply(
         intr: CommandInteraction | MessageComponentInteraction,
-        content: string | MessageEmbed | MessageOptions
+        content: string | MessageEmbed | WebhookEditMessageOptions
     ): Promise<Message> {
         try {
-            let msgOptions = MessageUtils.messageOptions(content);
-            return (await intr.editReply({
-                ...msgOptions,
-            })) as Message;
+            let options: WebhookEditMessageOptions =
+                typeof content === 'string'
+                    ? { content }
+                    : content instanceof MessageEmbed
+                        ? { embeds: [content] }
+                        : content;
+            return (await intr.editReply(options)) as Message;
         } catch (error) {
             if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
                 return;
@@ -93,15 +108,22 @@ export class InteractionUtils {
         }
     }
 
+
     public static async update(
         intr: MessageComponentInteraction,
-        content: string | MessageEmbed | MessageOptions
-    ): Promise<void> {
+        content: string | MessageEmbed | InteractionUpdateOptions
+    ): Promise<Message> {
         try {
-            let msgOptions = MessageUtils.messageOptions(content);
-            return await intr.update({
-                ...msgOptions,
-            });
+            let options: InteractionUpdateOptions =
+                typeof content === 'string'
+                    ? { content }
+                    : content instanceof MessageEmbed
+                        ? { embeds: [content] }
+                        : content;
+            return (await intr.update({
+                ...options,
+                fetchReply: true,
+            })) as Message;
         } catch (error) {
             if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
                 return;

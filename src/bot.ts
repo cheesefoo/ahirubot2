@@ -152,7 +152,8 @@ export class Bot {
     }
 
     private async onInteraction(intr: Interaction): Promise<void> {
-        if (
+        return;
+   /*     if (
             !this.ready ||
             (Debug.dummyMode.enabled && !Debug.dummyMode.whitelist.includes(intr.user.id))
         ) {
@@ -177,7 +178,7 @@ export class Bot {
             } catch (error) {
                 Logger.error(Logs.error.command, error);
             }
-        }
+        }*/
     }
 
     private async onReaction(

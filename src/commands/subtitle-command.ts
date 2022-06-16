@@ -51,7 +51,7 @@ export class SubtitleCommand implements Command {
     requireUserPerms: PermissionString[] = [];
 
     public async execute(intr: BaseCommandInteraction, data: EventData): Promise<void> {
-        await intr.deferReply();
+/*        await intr.deferReply();
         let cmd = intr as CommandInteraction;
         let text = cmd.options.getString('text');
         if (text.length > 50) {
@@ -63,7 +63,7 @@ export class SubtitleCommand implements Command {
             let attachment = await CanvasUtils.OverlayText(template, text);
             await InteractionUtils.send(intr, { attachments: [attachment] });
             return;
-        }
+        }*/
     }
 
     public async executeMessage(msg: Message, args: string[], data: EventData): Promise<void> {

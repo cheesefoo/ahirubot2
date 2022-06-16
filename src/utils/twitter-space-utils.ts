@@ -1,4 +1,4 @@
-import Twitter from 'twitter-v2';
+
 import fetch, { HeadersInit, Response } from 'node-fetch';
 import fs, { mkdir, createWriteStream } from 'fs';
 import { open, readdir } from 'fs/promises';

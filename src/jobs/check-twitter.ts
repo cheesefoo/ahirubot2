@@ -1,6 +1,6 @@
 // const Twitter = require('twitter-v2');
 import {createRequire} from 'node:module';
-import Twitter from 'twitter-v2';
+import { TwitterApi } from 'twitter-api-v2';
 import {Response} from 'node-fetch';
 import {Logger} from '../services';
 import {MessageUtils, DatabaseUtils} from '../utils';
@@ -42,11 +42,9 @@ export class CheckTwitter implements Job {
     }
 
     private async Check() {
-        let twitter = new Twitter({
-            bearer_token: process.env.twitter_token,
-        });
+        let twitter = new TwitterApi(process.env.twitter_token);
 
-        checks.forEach(async ([id, channel]) => {
+        for (const [id, channel] of checks) {
             let endPt = `https://api.twitter.com/2/spaces/by/creator_ids?user_ids=${id}`;
             let res = await twitter.get<Response>('spaces/by/creator_ids', {user_ids: id});
 
@@ -64,13 +62,13 @@ export class CheckTwitter implements Job {
                         let ch: TextChannel = this.client.channels.cache.get(
                             channel
                         ) as TextChannel;
-                        await MessageUtils.send(ch, {embeds: [embed]});
                         let metadata = await TwitterSpaceUtils.GetMetadata(spaceId);
                         let url = await TwitterSpaceUtils.GetURL(metadata);
                         let user: User = this.client.users.cache.get('118387143952302083');
                         await MessageUtils.send(user, '@venndiagram#7498\n' + '`' + url + '`');
-
                         await DatabaseUtils.Insert('SPACES', spaceId, url.toString());
+                        await MessageUtils.send(ch, {embeds: [embed]});
+
                     }
                 } catch (error) {
                     Logger.error(Logs.error.job.replace('{JOB}', 'CheckTwitter'), error);
@@ -78,7 +76,7 @@ export class CheckTwitter implements Job {
             } else {
                 Logger.trace(Logs.info.nospace);
             }
-        });
+        }
         Logger.trace(Logs.info.jobCompleted.replace('{JOB}', 'CheckTwitter'));
     }
 

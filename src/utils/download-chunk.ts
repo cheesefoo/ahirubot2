@@ -1,3 +1,4 @@
+/*
 import Twitter from 'twitter-v2';
 import fetch, { HeadersInit, Response } from 'node-fetch';
 import fs, { mkdir, createWriteStream } from 'fs';
@@ -23,3 +24,4 @@ parentPort.on('message', async url => {
     // return the result to main thread.
     parentPort.postMessage(result);
 });
+*/

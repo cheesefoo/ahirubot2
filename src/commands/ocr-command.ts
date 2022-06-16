@@ -40,7 +40,7 @@ export class OCRCommand implements Command {
 
     public async execute(intr: MessageContextMenuInteraction, data: EventData): Promise<void> {
         // throw new Error('Method not implemented.');
-
+/*
         await intr.deferReply();
         let attachments = intr.targetMessage.attachments;
         let len: number = attachments instanceof Collection ? attachments.size : attachments.length;
@@ -87,7 +87,7 @@ export class OCRCommand implements Command {
                 );
                 return;
             }
-        }
+        }*/
     }
 
     public async executeMessage(msg: Message, args: string[], data: EventData): Promise<void> {
