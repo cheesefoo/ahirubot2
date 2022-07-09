@@ -149,7 +149,7 @@ async function start(): Promise<void>
         // new CheckTwitter(client),
         new CheckHolodex(client,holodexClient,relayService),
     ];
-    // const token = 'ODI0NDg4NDQ1ODExNDkwODI3.YFwGsw.kXYBPiCrQD_CHLoikgVW12qsFDU';
+
     const token = process.env.discord_token;
 
     // Bot
