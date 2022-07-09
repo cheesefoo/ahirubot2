@@ -16,8 +16,8 @@ export class CheckHolodex implements Job
 
     public holodexClient;
     public relayService;
-    private checkedVideos: Video[];
-    private subbedVideos: Video[];
+    // private checkedVideos: Video[];
+    // private subbedVideos: Video[];
 
     constructor(private client: Client,holodexClient,relayService)
     {

@@ -9,6 +9,7 @@ export class Relay {
     public tldex;
     public subscribedVideos = [];
     private broadcastCh = '722257568361087057';
+    private lastUpdateReceived;
 
     constructor(private client: Client) {
         this.start().then(() => Logger.info('relay created'));
@@ -51,16 +52,16 @@ export class Relay {
                         isV: msg.is_vtuber,
                         isVerified: msg.is_verified,
                     };
-                    if (cmt.isV || cmt.isTl) {
+                    if (cmt.isV || cmt.isTl || cmt.name == "Tales of YouTube Channel") {
                         let shorttime = cmt.time.toString().substring(0, 10);
                         let content = `<t:${shorttime}:t>\` ${cmt.name}: ${cmt.body}\``;
-                        if (cmt.isV) {
+                        if (cmt.isV || cmt.name == "Tales of YouTube Channel") {
                             const emoji = ch.client.emojis.cache.find(e => e.name === 'deepl');
                             let tl = await ApiUtils.GetTranslation(cmt.body);
                             if (tl != undefined) {
                                 tl = `${emoji}:${tl}`;
                             }
-                            content = content.concat("\n",tl);
+                            content = content.concat("\n", tl);
 
                         }
                         await MessageUtils.send(ch, content);

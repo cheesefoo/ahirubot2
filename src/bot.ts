@@ -48,7 +48,8 @@ export class Bot {
 
     public async start(): Promise<void> {
         this.registerListeners();
-        await this.login(this.token);
+        await this.login('');
+        // await this.login(this.token);
         this.client.user.setPresence({
             status: 'online',
             activities: [{
