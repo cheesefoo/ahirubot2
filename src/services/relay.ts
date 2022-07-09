@@ -21,7 +21,7 @@ export class Relay {
             path: '/api/socket.io/', transports: ['websocket'],
         });
 
-        this.tldex.on('connect_error', err => console.error(err));
+        this.tldex.on('connect_error', err => Logger.error(err));
         this.tldex.on('connect', () => {
             Logger.info('connected to socket');
 
