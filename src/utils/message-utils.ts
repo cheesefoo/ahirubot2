@@ -87,6 +87,7 @@ export class MessageUtils {
                     : content instanceof MessageEmbed
                         ? {embeds: [content]}
                         : content;
+            // @ts-ignore
             return await msg.edit(msgOptions);
         } catch (error) {
             if (error instanceof DiscordAPIError && IGNORED_ERRORS.includes(error.code)) {
