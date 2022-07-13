@@ -9,6 +9,7 @@ export class Relay {
     public tldex;
     public subscribedVideos = [];
     private broadcastCh = '722257568361087057';
+    // private broadcastCh = '963848133475967086';//test
     private lastUpdateReceived;
 
     constructor(private client: Client) {
@@ -21,11 +22,11 @@ export class Relay {
             path: '/api/socket.io/', transports: ['websocket'],
         });
 
-        this.tldex.on('connect_error', err => Logger.error(err));
+        this.tldex.on('connect_error', err => Logger.error("CONNECT ERR: "+ err));
+        this.tldex.on('disconnect', err => Logger.error("CONNECTION DISCONNECT: "+err));
+        this.tldex.on("close", err=>Logger.error("CONNECTION CLOSED: " +err));
         this.tldex.on('connect', () => {
             Logger.info('connected to socket');
-
-
         });
         this.tldex.on('subscribeSuccess', async msg => {
 
@@ -33,7 +34,8 @@ export class Relay {
             Logger.info('subscribeSuccess ' + JSON.stringify(msg));
             let videoId = msg.id;
             this.subscribedVideos.push(videoId);
-            await MessageUtils.send(ch, `Relaying holodex TLs for ${msg.id}`);
+            Logger.info( `Relaying holodex TLs for ${msg.id}`);
+            // await MessageUtils.send(ch, `Relaying holodex TLs for ${msg.id}`);
             this.tldex.on(`${videoId}/en`, async msg => {
                 Logger.info(`Received a message in ${videoId}: ${JSON.stringify(msg)}`);
                 let shouldRelay = await DatabaseUtils.GetRelaySetting();
@@ -75,17 +77,7 @@ export class Relay {
 
         });
         const retries: Record<string, number> = {};
-        this.tldex.on('subscribeError', msg => {
-
-            /*            retries[msg.id]++;
-                        if (retries[msg.id] < 20)
-                        {
-                            setTimeout(() => this.setupLive(live), 30000);
-                        } else
-                        {
-                            delete retries[msg.id];
-                        }*/
-        });
+        this.tldex.on('subscribeError', err => Logger.error(err));
         this.tldex.onAny((evtName, ...args) => {
 
             if (!evtName.includes('/en') && evtName !== 'subscribeSuccess') {
