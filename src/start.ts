@@ -145,7 +145,7 @@ async function start(): Promise<void>
     // Jobs
     let jobs: Job[] = [
         // TODO: Add new jobs here
-        new CheckInstagram(client),
+        // new CheckInstagram(client),
         // new CheckTwitter(client),
         new CheckHolodex(client,holodexClient,relayService),
     ];
