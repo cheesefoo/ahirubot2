@@ -22,9 +22,18 @@ export class Relay {
             path: '/api/socket.io/', transports: ['websocket'],
         });
 
-        this.tldex.on('connect_error', err => Logger.error("CONNECT ERR: "+ err));
-        this.tldex.on('disconnect', err => Logger.error("CONNECTION DISCONNECT: "+err));
-        this.tldex.on("close", err=>Logger.error("CONNECTION CLOSED: " +err));
+        this.tldex.on('connect_error', err => Logger.error("CONNECT ERR: " + err));
+        this.tldex.on('disconnect', err => {
+            Logger.error("CONNECTION DISCONNECT: " + err);
+            const subbedVids = this.subscribedVideos.length
+            const vids = this.subscribedVideos;
+            this.subscribedVideos = [];
+
+            for (let i = 0; i < subbedVids; i++) {
+                this.setupLive(vids[i]);
+            }
+        });
+        this.tldex.on("close", err => Logger.error("CONNECTION CLOSED: " + err));
         this.tldex.on('connect', () => {
             Logger.info('connected to socket');
         });
@@ -34,7 +43,7 @@ export class Relay {
             Logger.info('subscribeSuccess ' + JSON.stringify(msg));
             let videoId = msg.id;
             this.subscribedVideos.push(videoId);
-            Logger.info( `Relaying holodex TLs for ${msg.id}`);
+            Logger.info(`Relaying holodex TLs for ${msg.id}`);
             // await MessageUtils.send(ch, `Relaying holodex TLs for ${msg.id}`);
             this.tldex.on(`${videoId}/en`, async msg => {
                 Logger.info(`Received a message in ${videoId}: ${JSON.stringify(msg)}`);
