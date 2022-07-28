@@ -26,11 +26,11 @@ export class Relay {
         this.tldex.on('disconnect', err => {
             Logger.error("CONNECTION DISCONNECT: " + err);
             const subbedVids = this.subscribedVideos.length
-            const vids = this.subscribedVideos;
+            const vids = this.subscribedVideos.slice();
             this.subscribedVideos = [];
 
             for (let i = 0; i < subbedVids; i++) {
-                this.setupLive(vids[i]);
+                this.setupLiveByVideoId(vids[i]);
             }
         });
         this.tldex.on("close", err => Logger.error("CONNECTION CLOSED: " + err));
@@ -103,7 +103,12 @@ export class Relay {
         }
         Logger.info(`setting up ${live.status} ${live.videoId} ${live.title}`);
         this.tldex.emit('subscribe', {video_id: live.videoId, lang: 'en'});
-
-
+    }
+    public setupLiveByVideoId(live: string): void {
+        if (this.subscribedVideos.includes(live)) {
+            return;
+        }
+        Logger.info(`setting up ${live}`);
+        this.tldex.emit('subscribe', {video_id: live, lang: 'en'});
     }
 }
