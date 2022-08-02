@@ -70,24 +70,7 @@ async function start(): Promise<void>
         // for finer control
         tracesSampleRate: 1.0,
     });
-    const transaction = Sentry.startTransaction({
-        op: 'test',
-        name: 'My First Test Transaction',
-    });
 
-    setTimeout(() =>
-    {
-        try
-        {
-            throw 'exception'
-        } catch (e)
-        {
-            Sentry.captureException(e);
-        } finally
-        {
-            transaction.finish();
-        }
-    }, 99);
 
     let client = new CustomClient({
         intents: Config.client.intents,
