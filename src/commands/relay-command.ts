@@ -4,7 +4,7 @@ import {createRequire} from 'node:module';
 import {LangCode} from '../models/enums';
 import {EventData} from '../models/internal-models';
 import {Lang, Logger} from '../services';
-import {DatabaseUtils, MessageUtils} from '../utils';
+import {MessageUtils} from '../utils';
 import {Command, CommandDeferType} from './command';
 
 const require = createRequire(import.meta.url);
@@ -17,6 +17,19 @@ export class RelayCommand implements Command {
     public requireDev = false;
     public requireGuild = false;
     public requirePerms = ['KICK_MEMBERS'];
+    deferType: CommandDeferType;
+    metadata: ApplicationCommandData = {
+        name: Lang.getCom('commands.relay'),
+        description: Lang.getRef('commandDescs.relay', Lang.Default),
+        options: [{
+            name: 'text',
+            description: 'ur subtitle',
+            type: 3,
+            required: true,
+        }],
+    };
+    requireClientPerms: PermissionString[] = [];
+    requireUserPerms: PermissionString[] = [];
     private relayService;
     private holodexClient: HolodexApiClient;
 
@@ -32,20 +45,6 @@ export class RelayCommand implements Command {
     public regex(langCode: LangCode): RegExp {
         return Lang.getRegex('commandRegexes.relay', langCode);
     }
-
-    deferType: CommandDeferType;
-    metadata: ApplicationCommandData = {
-        name: Lang.getCom('commands.relay'),
-        description: Lang.getRef('commandDescs.relay', Lang.Default),
-        options: [{
-            name: 'text',
-            description: 'ur subtitle',
-            type: 3,
-            required: true,
-        }],
-    };
-    requireClientPerms: PermissionString[] = [];
-    requireUserPerms: PermissionString[] = [];
 
     public async execute(intr: BaseCommandInteraction, data: EventData): Promise<void> {
 
@@ -79,9 +78,10 @@ export class RelayCommand implements Command {
         }
 
         if (arg2 === 'on') {
-            await DatabaseUtils.SetRelaySetting(true);
+            this.relayService.shouldRelay = true;
+
         } else if (arg2 === 'off') {
-            await DatabaseUtils.SetRelaySetting(false);
+            this.relayService.shouldRelay = false;
         }
         Logger.info(`relay ${arg2}`)
         await MessageUtils.send(msg.channel, `relay ${arg2}`);

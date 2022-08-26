@@ -2,7 +2,7 @@ import {Client, TextChannel} from 'discord.js';
 import {Video} from 'holodex.js';
 import {io} from 'socket.io-client';
 
-import {ApiUtils, DatabaseUtils, MessageUtils} from '../utils';
+import {ApiUtils,  MessageUtils} from '../utils';
 import {Logger} from './logger';
 
 export class Relay {
@@ -11,6 +11,7 @@ export class Relay {
     private broadcastCh = '722257568361087057';
     // private broadcastCh = '963848133475967086';//test
     private lastUpdateReceived;
+    public shouldRelay:Boolean = true;
 
     constructor(private client: Client) {
         this.start().then(() => Logger.info('relay created'));
@@ -69,9 +70,8 @@ export class Relay {
 
         this.tldex.on(`${videoId}/en`, async msg => {
             Logger.info(`Received a message in ${videoId}: ${JSON.stringify(msg)}`);
-            let shouldRelay = await DatabaseUtils.GetRelaySetting();
-            // let shouldRelay = true;
-            if (!shouldRelay)
+
+            if (!this.shouldRelay)
                 return;
 
             if (msg.name) {
