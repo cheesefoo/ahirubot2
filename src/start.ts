@@ -1,6 +1,8 @@
 // index.js
 
 // This allows TypeScript to detect our global value
+import util from "node:util";
+
 declare global
 {
     namespace NodeJS
@@ -51,7 +53,7 @@ import { JobService, Logger } from './services';
 import { Relay } from './services/relay';
 import { Trigger } from './triggers';
 import { AMSRTrigger } from './triggers/AMSRTrigger';
-
+import express, { Express } from 'express';
 const require = createRequire(import.meta.url);
 
 let Config = require('../config/config.json');
@@ -159,6 +161,12 @@ async function start(): Promise<void>
     // let api = new Api([webhookController]);
 
     // await api.start();
+
+    let app = express();
+    let listen = util.promisify(app.listen.bind(app));
+    await listen(Config.api.port);
+    Logger.info(Logs.info.apiStarted.replaceAll('{PORT}', Config.api.port));
+
     await bot.start();
 }
 

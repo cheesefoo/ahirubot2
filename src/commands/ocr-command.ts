@@ -118,8 +118,8 @@ export class OCRCommand implements Command {
                 }
                 await MessageUtils.send(msg.channel, `\`\`\`${detectedText}\`\`\``);
             } catch (errMsg) {
-                console.log(errMsg);
-                if (errMsg.startsWith('We can not access the URL currently)')) {
+                let err = errMsg.message;
+                if (err.startsWith('We can not access the URL currently)')) {
                     await MessageUtils.send(
                         msg.channel,
                         Lang.getEmbed('displayEmbeds.OCRCanNotAccessUrl', data.lang())

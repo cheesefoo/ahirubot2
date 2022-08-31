@@ -3,6 +3,7 @@ import { google } from '@google-cloud/vision/build/protos/protos';
 import translate from 'deepl';
 import { createRequire } from 'node:module';
 import imageToBase64 from 'image-to-base64';
+import {Logger} from "../services";
 
 const require = createRequire(import.meta.url);
 let Config = require('../../config/config.json');
@@ -10,8 +11,11 @@ let Config = require('../../config/config.json');
 export class ApiUtils {
     public static async OCRRequest(url: string): Promise<string> {
         let googleApiKey: string = process.env.google_privatekey;
+        // console.error("BEFORE:"+googleApiKey)
 
         googleApiKey = googleApiKey.replace(/\\n/g, '\n');
+        // await Logger.error(googleApiKey)
+        // console.error("AFTER:"+googleApiKey)
 
         const options = {
             credentials: { client_email: process.env.google_email, private_key: googleApiKey },
