@@ -1,9 +1,8 @@
 // const Twitter = require('twitter-v2');
 import {createRequire} from 'node:module';
-import { TwitterApi } from 'twitter-api-v2';
-import {Response} from 'node-fetch';
+import {TwitterApi} from 'twitter-api-v2';
 import {Logger} from '../services';
-import {MessageUtils, DatabaseUtils} from '../utils';
+import {DatabaseUtils, MessageUtils} from '../utils';
 import {Job} from './job';
 
 import {Client, TextChannel, User} from 'discord.js';
@@ -23,6 +22,7 @@ let checks = [
     [subaId, broadcastChannel],
     // [uimamaId, broadcastChannel2],
 ];
+
 /*
 [2022-06-17 16:06:00.040] ERROR: An error occurred while running the 'Check Twitter' job.
 shardId: 0
@@ -49,8 +49,10 @@ export class CheckTwitter implements Job {
     public name = 'Check Twitter';
     public schedule: string = Config.jobs.checkTwitter.schedule;
     public log: boolean = Config.jobs.checkTwitter.log;
+    private _twitter;
 
     constructor(private client: Client) {
+        this._twitter = new TwitterApi(process.env.twitter_token);
     }
 
     //subastream
@@ -63,12 +65,11 @@ export class CheckTwitter implements Job {
     }
 
     private async Check() {
-        let twitter = new TwitterApi(process.env.twitter_token);
 
         for (const [id, channel] of checks) {
             let endPt = `https://api.twitter.com/2/spaces/by/creator_ids?user_ids=${id}`;
-            let res = await twitter.get<Response>('spaces/by/creator_ids', {user_ids: id});
-
+            // let res = await twitter.get<Response>('spaces/by/creator_ids', {user_ids: id});
+            let res = await this._twitter.v2.spacesByCreators(id);
             //There is a live space
             if (res['meta']['result_count'] != 0) {
                 let spaceId = res['data'][0].id;
