@@ -39,7 +39,7 @@ export class TwitterSpaceUtils {
         let searchParams = new URLSearchParams(params).toString();
 
         let headers = {
-            authorization: process.env.twitter_bearer,
+            authorization: "Bearer "+ process.env.twitter_bearer,
             'x-guest-token': await this.GetGuestToken(),
         };
 
