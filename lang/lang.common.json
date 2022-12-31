@@ -6,6 +6,7 @@
     "commands": {
         "dev": "dev",
         "deepl": "deepl",
+        "gtl": "gtl",
         "ocr": "ocr",
         "relay": "relay",
         "jisho": "jisho",

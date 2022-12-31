@@ -13,6 +13,7 @@
                             "**{{REF:bot.prefix}}{{REF:commands.relay}} <add> <youtube id>** relay individual stream",
                             "**{{REF:bot.prefix}}{{REF:commands.ocr}} <img link or attachment>** - extract text from image",
                             "**{{REF:bot.prefix}}{{REF:commands.deepl}} <text to translate>** - use DeepL to TL EN->JA or *->EN",
+                            "**{{REF:bot.prefix}}{{REF:commands.gtl}} same as above but google translate",
                             "**{{REF:bot.prefix}}{{REF:commands.jisho}} <term to search>** - search Jisho.org",
                             "**{{REF:bot.prefix}}{{REF:commands.subtitle}} <caption text>** - clutter chat with a garbage meme",
                             "**{{REF:bot.prefix}}fist <caption text>** - lower IQ of chat with a trash meme"
@@ -64,6 +65,16 @@
                     {
                         "name": "Usage",
                         "value": ["~deepl <text to translate>"]
+                    }
+                ]
+            },
+            "gtlHelp": {
+                "title": "gtl - Help",
+                "description": "Translates text to English or Japanese",
+                "fields": [
+                    {
+                        "name": "Usage",
+                        "value": ["~gtl <text to translate>"]
                     }
                 ]
             },
@@ -214,7 +225,8 @@
             "help": "/\\b({{REF:commands.help}}|h|\\?)\\b/i",
             "relay": "/\\b({{REF:commands.relay}}|h|\\?)\\b/i",
             "puzzle": "/\\b({{REF:commands.puzzle}}|suffering)\\b/i",
-            "deepl": "/\\b({{REF:commands.deepl}}|tl|translate)\\b/i",
+            "deepl": "/\\b({{REF:commands.deepl}})\\b/i",
+            "gtl": "/\\b({{REF:commands.gtl}}|tl|translate)\\b/i",
             "ocr": "/\\b({{REF:commands.ocr}}|read)\\b/i",
             "jisho": "/\\b({{REF:commands.jisho}}|kanji|jsho)\\b/i",
             "subtitle": "/\\b({{REF:commands.subtitle}}|subtitle|meme|think|fist|arthur)\\b/i",
@@ -252,6 +264,7 @@
             "puzzle": "puzzle",
             "ocr": "ocr",
             "deepl": "deepl",
+            "gtl": "gtl",
             "jisho": "jisho",
             "subtitle": "subtitle",
             "relay": "relay",
@@ -265,6 +278,7 @@
             "puzzle": "<direct link to img> <# of pieces>** - makes a puzzle",
             "ocr":"<img link or attachment>** - extract text from image",
             "deepl": "<text to translate>** - use DeepL to TL EN->JA or *->EN",
+            "gtl": "<text to translate>** - use Google Translate to TL EN->JA or *->EN",
             "jisho": "<term to search>** - search Jisho.org",
             "subtitle": "<caption text>** - clutter chat with a garbage meme",
             "fist": "<caption text>** - lower IQ of chat with a trash meme"

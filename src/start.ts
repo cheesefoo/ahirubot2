@@ -2,40 +2,20 @@
 
 // This allows TypeScript to detect our global value
 import util from "node:util";
-
-declare global
-{
-    namespace NodeJS
-    {
-        interface Global
-        {
-            __rootdir__: string;
-        }
-    }
-}
-
-global.__rootdir__ = process.cwd();
-import { REST } from '@discordjs/rest';
-import { RewriteFrames } from '@sentry/integrations';
+import {REST} from '@discordjs/rest';
+import {RewriteFrames} from '@sentry/integrations';
 import * as Sentry from '@sentry/node';
 // Importing @sentry/tracing patches the global hub for tracing to work.
 import '@sentry/tracing';
-import { Routes } from 'discord-api-types/v9';
-import { Options } from 'discord.js';
-import { HolodexApiClient } from 'holodex.js';
-import { createRequire } from 'node:module';
+import {Routes} from 'discord-api-types/v9';
+import {Options} from 'discord.js';
+import {HolodexApiClient} from 'holodex.js';
+import {createRequire} from 'node:module';
 
-import { Bot } from './bot.js';
-import { Button } from './buttons';
-import {
-    Command,
-    DeepLCommand,
-    HelpCommand,
-    JishoCommand,
-    OCRCommand,
-    RelayCommand,
-    SubtitleCommand,
-} from './commands';
+import {Bot} from './bot.js';
+import {Button} from './buttons';
+import {Command, DeepLCommand, HelpCommand, JishoCommand, OCRCommand, RelayCommand, SubtitleCommand,GoogleTranslateCommand} from './commands';
+
 import {
     ButtonHandler,
     CommandHandler,
@@ -45,22 +25,31 @@ import {
     ReactionHandler,
     TriggerHandler,
 } from './events';
-import { CustomClient } from './extensions';
-import { CheckInstagram, CheckTwitter, Job } from './jobs';
-import { CheckHolodex } from './jobs/check-holodex';
-import { Reaction } from './reactions';
-import { JobService, Logger } from './services';
-import { Relay } from './services/relay';
-import { Trigger } from './triggers';
-import { AMSRTrigger } from './triggers/AMSRTrigger';
-import express, { Express } from 'express';
+import {CustomClient} from './extensions';
+import {CheckTwitter, Job} from './jobs';
+import {CheckHolodex} from './jobs/check-holodex';
+import {Reaction} from './reactions';
+import {JobService, Logger} from './services';
+import {Relay} from './services/relay';
+import {Trigger} from './triggers';
+import {AMSRTrigger} from './triggers/AMSRTrigger';
+import express from 'express';
+
+declare global {
+    namespace NodeJS {
+        interface Global {
+            __rootdir__: string;
+        }
+    }
+}
+
+global.__rootdir__ = process.cwd();
 const require = createRequire(import.meta.url);
 
 let Config = require('../config/config.json');
 let Logs = require('../lang/logs.json');
 
-async function start(): Promise<void>
-{
+async function start(): Promise<void> {
     Sentry.init({
         dsn: 'https://284c7e02c17f4e33b15de7d0accb4eaf@o559712.ingest.sentry.io/6327267',
         integrations: [
@@ -96,8 +85,9 @@ async function start(): Promise<void>
         // TODO: Add new commands here
         new OCRCommand(),
         new DeepLCommand(),
+        new GoogleTranslateCommand(),
         // new PuzzleCommand(),
-        new RelayCommand(holodexClient,relayService),
+        new RelayCommand(holodexClient, relayService),
         new JishoCommand(),
         new SubtitleCommand(),
     ].sort((a, b) => (a.metadata.name > b.metadata.name ? 1 : -1));
@@ -132,10 +122,11 @@ async function start(): Promise<void>
         // TODO: Add new jobs here
         // new CheckInstagram(client),
         new CheckTwitter(client),
-        new CheckHolodex(client,holodexClient,relayService),
+        new CheckHolodex(client, holodexClient, relayService),
     ];
 
-    const token = process.env.discord_token;
+    const token = process.env.discord_token_test;
+    // const token = process.env.discord_token;
 
     // Bot
     let bot = new Bot(
@@ -151,8 +142,7 @@ async function start(): Promise<void>
     );
 
     // Register
-    if (process.argv[2] === '--register')
-    {
+    if (process.argv[2] === '--register') {
         await registerCommands([new OCRCommand(), new DeepLCommand()]);
         process.exit();
     }
@@ -170,8 +160,7 @@ async function start(): Promise<void>
     await bot.start();
 }
 
-async function registerCommands(commands: Command[]): Promise<void>
-{
+async function registerCommands(commands: Command[]): Promise<void> {
     let cmdDatas = commands.map(cmd => cmd.metadata);
     let cmdNames = cmdDatas.map(cmdData => cmdData.name);
 
@@ -182,15 +171,13 @@ async function registerCommands(commands: Command[]): Promise<void>
         ),
     );
 
-    try
-    {
+    try {
         const token = process.env.discord_token;
         let id = '824488445811490827';
-        let rest = new REST({ version: '9' }).setToken(token);
-        await rest.put(Routes.applicationCommands(id), { body: [] });
-        await rest.put(Routes.applicationCommands(id), { body: cmdDatas });
-    } catch (error)
-    {
+        let rest = new REST({version: '9'}).setToken(token);
+        await rest.put(Routes.applicationCommands(id), {body: []});
+        await rest.put(Routes.applicationCommands(id), {body: cmdDatas});
+    } catch (error) {
         Logger.error(Logs.error.commandsRegistering, error);
         return;
     }
@@ -198,13 +185,11 @@ async function registerCommands(commands: Command[]): Promise<void>
     Logger.info(Logs.info.commandsRegistered);
 }
 
-process.on('unhandledRejection', (reason, _promise) =>
-{
+process.on('unhandledRejection', (reason, _promise) => {
     Logger.error(Logs.error.unhandledRejection, reason);
 });
 
 
-start().catch(error =>
-{
+start().catch(error => {
     Logger.error(Logs.error.unspecified, error);
 });

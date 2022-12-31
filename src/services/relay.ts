@@ -2,16 +2,16 @@ import {Client, TextChannel} from 'discord.js';
 import {Video} from 'holodex.js';
 import {io} from 'socket.io-client';
 
-import {ApiUtils,  MessageUtils} from '../utils';
+import {ApiUtils, MessageUtils} from '../utils';
 import {Logger} from './logger';
 
 export class Relay {
     public tldex;
     public subscribedVideos = [];
+    public shouldRelay: Boolean = true;
     private broadcastCh = '722257568361087057';
     // private broadcastCh = '963848133475967086';//test
     private lastUpdateReceived;
-    public shouldRelay:Boolean = true;
 
     constructor(private client: Client) {
         this.start().then(() => Logger.info('relay created'));
@@ -85,6 +85,10 @@ export class Relay {
                     isV: msg.is_vtuber,
                     isVerified: msg.is_verified,
                 };
+                if (cmt.name == "黒瀬浩介 / Kurose Kousuke"
+                    || cmt.name == "Raykayalia") {
+                    return;
+                }
                 if (cmt.isV || cmt.isTl || cmt.name == "Tales of YouTube Channel") {
                     let shorttime = cmt.time.toString().substring(0, 10);
                     let content = `<t:${shorttime}:t>\` ${cmt.name}: ${cmt.body}\``;
