@@ -2,7 +2,7 @@
 import {createRequire} from 'node:module';
 import {TwitterApi} from 'twitter-api-v2';
 import {Logger} from '../services';
-import {DatabaseUtils, MessageUtils} from '../utils';
+import {MessageUtils} from '../utils';
 import {Job} from './job';
 
 import {Client, TextChannel, User} from 'discord.js';
@@ -18,6 +18,7 @@ let subaId = '1027853566780698624';
 let uimamaId = '69496975';
 let broadcastChannel = '722257568361087057';
 let broadcastChannel2 = '825378176993722378';
+let tweetChannel = '722253724835381300';
 let checks = [
     [subaId, broadcastChannel],
     // [uimamaId, broadcastChannel2],
@@ -51,8 +52,11 @@ export class CheckTwitter implements Job {
     public log: boolean = Config.jobs.checkTwitter.log;
     private _twitter;
 
+    private _seen: string[] = [];
+
     constructor(private client: Client) {
-        this._twitter = new TwitterApi(process.env.twitter_token);
+        const twitter = new TwitterApi(process.env.twitter_token);
+        this._twitter = twitter.readOnly
     }
 
     //subastream
@@ -67,39 +71,56 @@ export class CheckTwitter implements Job {
     private async Check() {
 
         for (const [id, channel] of checks) {
-            let endPt = `https://api.twitter.com/2/spaces/by/creator_ids?user_ids=${id}`;
-            // let res = await twitter.get<Response>('spaces/by/creator_ids', {user_ids: id});
-            let res = await this._twitter.v2.spacesByCreators(id);
-            //There is a live space
-            if (res['meta']['result_count'] != 0) {
-                let spaceId = res['data'][0].id;
-                let state = res['data'][0].state;
-                try {
-                    //Check if we've seen it already
-                    if (await DatabaseUtils.CheckIfExists('SPACES', spaceId)) {
-                        Logger.trace(Logs.info.spacesold.replace('{SC}', spaceId));
-                    } else {
-                        //New, post to discord
-                        let embed = await this.buildEmbed(spaceId);
-                        let ch: TextChannel = this.client.channels.cache.get(
-                            channel
-                        ) as TextChannel;
-                        let metadata = await TwitterSpaceUtils.GetMetadata(spaceId);
-                        let url = await TwitterSpaceUtils.GetURL(metadata);
-                        let user: User = this.client.users.cache.get('118387143952302083');
-                        await MessageUtils.send(user, '@venndiagram#7498\n' + '`' + url + '`');
-                        await DatabaseUtils.Insert('SPACES', spaceId, url.toString());
-                        await MessageUtils.send(ch, {embeds: [embed]});
-
-                    }
-                } catch (error) {
-                    Logger.error(Logs.error.job.replace('{JOB}', 'CheckTwitter'), error);
+            // await this.checkSpace(id, channel);
+            let tweets = await this._twitter.v2.userTimeline(id, {max_results: "5"})
+            for(const tweet of tweets.tweets) {
+                console.log(tweet);
+                if (this._seen.includes(tweet.id)) {
+                    continue;
                 }
-            } else {
-                Logger.trace(Logs.info.nospace);
+                this._seen.push(tweet.id)
+                let url = `https://twitter.com/oozorasubaru/status/${tweet.id}`;
+                console.log(url);
+                await MessageUtils.send(this.client.channels.cache.get(tweetChannel) as TextChannel, url);
             }
+
         }
         Logger.trace(Logs.info.jobCompleted.replace('{JOB}', 'CheckTwitter'));
+    }
+
+    private async checkSpace(id: string, channel: string) {
+        let endPt = `https://api.twitter.com/2/spaces/by/creator_ids?user_ids=${id}`;
+        // let res = await twitter.get<Response>('spaces/by/creator_ids', {user_ids: id});
+        let res = await this._twitter.v2.spacesByCreators(id);
+        //There is a live space
+        if (res['meta']['result_count'] == 0) {
+            Logger.trace(Logs.info.nospace);
+            return;
+        }
+        let spaceId = res['data'][0].id;
+        let state = res['data'][0].state;
+        try {
+            //Check if we've seen it already
+            if (this._seen.includes(spaceId)) {
+                Logger.trace(Logs.info.spacesold.replace('{SC}', spaceId));
+            } else {
+                //New, post to discord
+                this._seen.push(spaceId)
+                let embed = await this.buildEmbed(spaceId);
+                let ch: TextChannel = this.client.channels.cache.get(
+                    channel
+                ) as TextChannel;
+                let metadata = await TwitterSpaceUtils.GetMetadata(spaceId);
+                let url = await TwitterSpaceUtils.GetURL(metadata);
+                let user: User = this.client.users.cache.get('118387143952302083');
+                await MessageUtils.send(user, '@venndiagram#7498\n' + '`' + url + '`');
+                await MessageUtils.send(ch, {embeds: [embed]});
+
+            }
+        } catch (error) {
+            Logger.error(Logs.error.job.replace('{JOB}', 'CheckTwitter'), error);
+        }
+
     }
 
     private async buildEmbed(spaceId) {
