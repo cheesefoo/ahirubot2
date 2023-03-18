@@ -74,10 +74,10 @@ export class CheckTwitter implements Job {
             // await this.checkSpace(id, channel);
             let tweets = await this._twitter.v2.userTimeline(id, {max_results: "5"})
             for(const tweet of tweets.tweets) {
-                console.log(tweet);
                 if (this._seen.includes(tweet.id)) {
                     continue;
                 }
+                console.log(tweet);
                 this._seen.push(tweet.id)
                 let url = `https://twitter.com/oozorasubaru/status/${tweet.id}`;
                 console.log(url);
