@@ -1,6 +1,6 @@
 // const Twitter = require('twitter-v2');
 import {createRequire} from 'node:module';
-import {TwitterApi} from 'twitter-api-v2';
+import {TwitterApi, TwitterV2IncludesHelper} from 'twitter-api-v2';
 import {Logger} from '../services';
 import {MessageUtils} from '../utils';
 import {Job} from './job';
@@ -18,7 +18,8 @@ let subaId = '1027853566780698624';
 let uimamaId = '69496975';
 let broadcastChannel = '722257568361087057';
 let broadcastChannel2 = '825378176993722378';
-let tweetChannel = '722253724835381300';
+// let tweetChannel = '722253724835381300';
+let tweetChannel = '870361524789723187';
 let checks = [
     [subaId, broadcastChannel],
     // [uimamaId, broadcastChannel2],
@@ -72,16 +73,29 @@ export class CheckTwitter implements Job {
 
         for (const [id, channel] of checks) {
             // await this.checkSpace(id, channel);
-            let tweets = await this._twitter.v2.userTimeline(id, {max_results: "5"})
-            for(const tweet of tweets.tweets) {
+            let tweets = await this._twitter.v2.userTimeline(id, {
+                max_results: "5", 'tweet.fields': ['author_id', 'referenced_tweets'],
+                expansions: ['author_id', 'referenced_tweets.id', 'in_reply_to_user_id', 'referenced_tweets.id.author_id']
+            })
+            const includes = new TwitterV2IncludesHelper(tweets);
+            for (const tweet of tweets.tweets) {
                 if (this._seen.includes(tweet.id)) {
                     continue;
                 }
-                console.log(tweet);
+                let username = 'oozorasubaru';
+                let msg = '';
+                let tweetId = tweet.id
+                const isRetweet = includes.retweet(tweet);
+                if (isRetweet != null) {
+                    let retweet = await this._twitter.v2.user(isRetweet.author_id)
+                    username = retweet.data.username;
+                    tweetId = isRetweet.id;
+                    msg = 'Subaru retweeted this: '
+                }
                 this._seen.push(tweet.id)
-                let url = `https://twitter.com/oozorasubaru/status/${tweet.id}`;
-                console.log(url);
-                await MessageUtils.send(this.client.channels.cache.get(tweetChannel) as TextChannel, url);
+                msg += `https://twitter.com/${username}/status/${tweetId}`;
+
+                await MessageUtils.send(this.client.channels.cache.get(tweetChannel) as TextChannel, msg);
             }
 
         }
