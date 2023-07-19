@@ -312,7 +312,7 @@ packages:
       '@google-cloud/promisify': 3.0.1
       arrify: 2.0.1
       extend: 3.0.2
-      google-gax: 3.6.0
+      google-gax: 3.6.1
       is-html: 2.0.0
     transitivePeerDependencies:
       - encoding
@@ -324,7 +324,7 @@ packages:
     engines: {node: '>=12.0.0'}
     dependencies:
       '@google-cloud/promisify': 3.0.1
-      google-gax: 3.6.0
+      google-gax: 3.6.1
       is: 3.3.0
     transitivePeerDependencies:
       - encoding
@@ -347,7 +347,7 @@ packages:
       '@types/long': 4.0.1
       lodash.camelcase: 4.3.0
       long: 4.0.0
-      protobufjs: 7.2.3
+      protobufjs: 7.2.4
       yargs: 17.7.2
     dev: false
 
@@ -1052,7 +1052,7 @@ packages:
     dev: false
 
   /ansi-regex@2.1.1:
-    resolution: {integrity: sha1-w7M6te42DYbg5ijwRorn7yfWVN8=}
+    resolution: {integrity: sha512-TIGnTpdo+E3+pCyAluZvtED5p5wCqLdezCyhPZzKPcxvFplEt4i+W7OONCKgeZFT3+y5NZZfOOS/Bdcanm1MYA==}
     engines: {node: '>=0.10.0'}
     dev: false
 
@@ -1536,7 +1536,7 @@ packages:
     dev: false
 
   /concat-map@0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   /conf@10.1.2:
     resolution: {integrity: sha512-o9Fv1Mv+6A0JpoayQ8JleNp3hhkbOJP/Re/Q+QqxMPHPkABVsRjQGWZn9A5GcqLiTNC6d89p2PB5ZhHVDSMwyg==}
@@ -2034,7 +2034,7 @@ packages:
     dev: false
 
   /escape-string-regexp@1.0.5:
-    resolution: {integrity: sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=}
+    resolution: {integrity: sha512-vbRorB5FUQWvla16U8R/qgaFIya2qGzwDrNmCZuYKrbdSUMG6I1ZCGQRefkRVhuOkIGVne7BQ35DSfo1qvJqFg==}
     engines: {node: '>=0.8.0'}
 
   /escape-string-regexp@2.0.0:
@@ -2751,8 +2751,8 @@ packages:
       - supports-color
     dev: false
 
-  /google-gax@3.6.0:
-    resolution: {integrity: sha512-2fyb61vWxUonHiArRNJQmE4tx5oY1ni8VPo08fzII409vDSCWG7apDX4qNOQ2GXXT82gLBn3d3P1Dydh7pWjyw==}
+  /google-gax@3.6.1:
+    resolution: {integrity: sha512-g/lcUjGcB6DSw2HxgEmCDOrI/CByOwqRvsuUvNalHUK2iPPPlmAIpbMbl62u0YufGMr8zgE3JL7th6dCb1Ry+w==}
     engines: {node: '>=12'}
     hasBin: true
     dependencies:
@@ -2765,11 +2765,11 @@ packages:
       fast-text-encoding: 1.0.3
       google-auth-library: 8.9.0
       is-stream-ended: 0.1.4
-      node-fetch: 2.6.7
+      node-fetch: 2.6.12
       object-hash: 3.0.0
       proto3-json-serializer: 1.1.1
-      protobufjs: 7.2.3
-      protobufjs-cli: 1.1.1(protobufjs@7.2.3)
+      protobufjs: 7.2.4
+      protobufjs-cli: 1.1.1(protobufjs@7.2.4)
       retry-request: 5.0.2
     transitivePeerDependencies:
       - encoding
@@ -2809,7 +2809,7 @@ packages:
     dev: false
 
   /has-flag@3.0.0:
-    resolution: {integrity: sha1-tdRU3CGZriJWmfNGfloH87lVuv0=}
+    resolution: {integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==}
     engines: {node: '>=4'}
 
   /has-flag@4.0.0:
@@ -3999,7 +3999,7 @@ packages:
     dev: true
 
   /path-is-absolute@1.0.1:
-    resolution: {integrity: sha1-F0uSaHNVNP+8es5r9TpanhtcX18=}
+    resolution: {integrity: sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==}
     engines: {node: '>=0.10.0'}
 
   /path-key@3.1.1:
@@ -4311,10 +4311,10 @@ packages:
     resolution: {integrity: sha512-AwAuY4g9nxx0u52DnSMkqqgyLHaW/XaPLtaAo3y/ZCfeaQB/g4YDH4kb8Wc/mWzWvu0YjOznVnfn373MVZZrgw==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      protobufjs: 7.2.3
+      protobufjs: 7.2.4
     dev: false
 
-  /protobufjs-cli@1.1.1(protobufjs@7.2.3):
+  /protobufjs-cli@1.1.1(protobufjs@7.2.4):
     resolution: {integrity: sha512-VPWMgIcRNyQwWUv8OLPyGQ/0lQY/QTQAVN5fh+XzfDwsVw1FZ2L3DM/bcBf8WPiRz2tNpaov9lPZfNcmNo6LXA==}
     engines: {node: '>=12.0.0'}
     hasBin: true
@@ -4328,14 +4328,14 @@ packages:
       glob: 8.1.0
       jsdoc: 4.0.2
       minimist: 1.2.6
-      protobufjs: 7.2.3
+      protobufjs: 7.2.4
       semver: 7.3.7
       tmp: 0.2.1
       uglify-js: 3.17.4
     dev: false
 
-  /protobufjs@7.2.3:
-    resolution: {integrity: sha512-TtpvOqwB5Gdz/PQmOjgsrGH1nHjAQVCN7JG4A6r1sXRWESL5rNMAiRcBQlCAdKxZcAbstExQePYG8xof/JVRgg==}
+  /protobufjs@7.2.4:
+    resolution: {integrity: sha512-AT+RJgD2sH8phPmCf7OUZR8xGdcJRga4+1cOaXJ64hvcSkVhNcRHOwIxUatPH15+nj59WAGTDv3LSGZPEQbJaQ==}
     engines: {node: '>=12.0.0'}
     requiresBuild: true
     dependencies:
@@ -4987,7 +4987,7 @@ packages:
     dev: true
 
   /strip-json-comments@2.0.1:
-    resolution: {integrity: sha1-PFMZQukIwml8DsNEhYwobHygpgo=}
+    resolution: {integrity: sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ==}
     engines: {node: '>=0.10.0'}
 
   /strip-json-comments@3.1.1:
@@ -5068,7 +5068,7 @@ packages:
     dependencies:
       http-proxy-agent: 5.0.0
       https-proxy-agent: 5.0.0
-      node-fetch: 2.6.7
+      node-fetch: 2.6.12
       stream-events: 1.0.5
       uuid: 9.0.0
     transitivePeerDependencies:
