@@ -9,6 +9,7 @@
         "gtl": "gtl",
         "ocr": "ocr",
         "relay": "relay",
+        "blacklist": "blacklist",
         "jisho": "jisho",
         "subtitle": "subtitle",
         "help": "help",

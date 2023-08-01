@@ -11,6 +11,7 @@
                             "**{{REF:bot.prefix}}{{REF:commands.help}}** - displays this",
                             "**{{REF:bot.prefix}}{{REF:commands.relay}} <on || off>** enable or disable holodex tl relay",
                             "**{{REF:bot.prefix}}{{REF:commands.relay}} <add> <youtube id>** relay individual stream",
+                            "**{{REF:bot.prefix}}{{REF:commands.blacklist}} <name> blacklist person from TL relay",
                             "**{{REF:bot.prefix}}{{REF:commands.ocr}} <img link or attachment>** - extract text from image",
                             "**{{REF:bot.prefix}}{{REF:commands.deepl}} <text to translate>** - use DeepL to TL EN->JA or *->EN",
                             "**{{REF:bot.prefix}}{{REF:commands.gtl}} same as above but google translate",
@@ -224,6 +225,7 @@
             "dev": "/\\b({{REF:commands.dev}}|developer|usage|memory|mem)\\b/i",
             "help": "/\\b({{REF:commands.help}}|h|\\?)\\b/i",
             "relay": "/\\b({{REF:commands.relay}}|h|\\?)\\b/i",
+            "blacklist": "/\\b({{REF:commands.blacklist}}|h|\\?)\\b/i",
             "puzzle": "/\\b({{REF:commands.puzzle}}|suffering)\\b/i",
             "deepl": "/\\b({{REF:commands.deepl}})\\b/i",
             "gtl": "/\\b({{REF:commands.gtl}}|tl|translate)\\b/i",
@@ -268,12 +270,14 @@
             "jisho": "jisho",
             "subtitle": "subtitle",
             "relay": "relay",
+            "blacklist": "blacklist",
             "fist": "fist"
         },
 
         "commandDescs": {
             "help": "displays this",
             "relay": "<on || off> enable or disable holodex tl relay \n<add> <youtube ID> sub to holodex TL for a stream",
+            "blacklist": "<name> blacklist person from TL relay",
 
             "puzzle": "<direct link to img> <# of pieces>** - makes a puzzle",
             "ocr":"<img link or attachment>** - extract text from image",

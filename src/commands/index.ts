@@ -9,3 +9,4 @@ export { PuzzleCommand } from './puzzle-command';
 export { JishoCommand } from './jisho-command';
 export { SubtitleCommand } from './subtitle-command';
 export { RelayCommand } from './relay-command';
+export { BlacklistCommand } from './blacklist-command';

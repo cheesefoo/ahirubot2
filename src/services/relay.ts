@@ -9,12 +9,19 @@ export class Relay {
     public tldex;
     public subscribedVideos = [];
     public shouldRelay: Boolean = true;
-    private broadcastCh = '722257568361087057';
-    // private broadcastCh = '963848133475967086';//test
+    // private broadcastCh = '722257568361087057';
+    public blacklist : string[] = ['黒瀬浩介 / Kurose Kousuke']
+    private broadcastCh = '963848133475967086';//test
     private lastUpdateReceived;
 
     constructor(private client: Client) {
         this.start().then(() => Logger.info('relay created'));
+    }
+    public blacklistAdd(name:string){
+        if(this.blacklist.includes(name))
+            return;
+        this.blacklist.push(name);
+        console.log(this.blacklist);
     }
 
     public async start(): Promise<void> {
@@ -85,8 +92,8 @@ export class Relay {
                     isV: msg.is_vtuber,
                     isVerified: msg.is_verified,
                 };
-                if (cmt.name == "黒瀬浩介 / Kurose Kousuke"
-                    || cmt.name == "Raykayalia") {
+                if (this.blacklist.includes(cmt.name)) {
+                    Logger.info(`filtered a blacklist person: ${cmt.name}`);
                     return;
                 }
                 if (cmt.isV || cmt.isTl || cmt.name == "Tales of YouTube Channel") {

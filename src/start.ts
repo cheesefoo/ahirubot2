@@ -14,7 +14,17 @@ import {createRequire} from 'node:module';
 
 import {Bot} from './bot.js';
 import {Button} from './buttons';
-import {Command, DeepLCommand, HelpCommand, JishoCommand, OCRCommand, RelayCommand, SubtitleCommand,GoogleTranslateCommand} from './commands';
+import {
+    Command,
+    DeepLCommand,
+    HelpCommand,
+    JishoCommand,
+    OCRCommand,
+    RelayCommand,
+    SubtitleCommand,
+    GoogleTranslateCommand,
+    BlacklistCommand
+} from './commands';
 
 import {
     ButtonHandler,
@@ -88,6 +98,7 @@ async function start(): Promise<void> {
         new GoogleTranslateCommand(),
         // new PuzzleCommand(),
         new RelayCommand(holodexClient, relayService),
+        new BlacklistCommand(relayService),
         new JishoCommand(),
         new SubtitleCommand(),
     ].sort((a, b) => (a.metadata.name > b.metadata.name ? 1 : -1));
@@ -121,7 +132,7 @@ async function start(): Promise<void> {
     let jobs: Job[] = [
         // TODO: Add new jobs here
         // new CheckInstagram(client),
-        new CheckTwitter(client),
+        // new CheckTwitter(client),
         new CheckHolodex(client, holodexClient, relayService),
     ];
 

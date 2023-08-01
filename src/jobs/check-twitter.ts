@@ -73,7 +73,7 @@ export class CheckTwitter implements Job {
 
         for (const [id, channel] of checks) {
             // await this.checkSpace(id, channel);
-            let tweets = await this._twitter.v2.userTimeline(id, {
+            let tweets = await this._twitter.v1.userTimeline(id, {
                 max_results: "5", 'tweet.fields': ['author_id', 'referenced_tweets'],
                 expansions: ['author_id', 'referenced_tweets.id', 'in_reply_to_user_id', 'referenced_tweets.id.author_id']
             })
@@ -87,7 +87,7 @@ export class CheckTwitter implements Job {
                 let tweetId = tweet.id
                 const isRetweet = includes.retweet(tweet);
                 if (isRetweet != null) {
-                    let retweet = await this._twitter.v2.user(isRetweet.author_id)
+                    let retweet = await this._twitter.v1.user(isRetweet.author_id)
                     username = retweet.data.username;
                     tweetId = isRetweet.id;
                     msg = 'Subaru retweeted this: '
