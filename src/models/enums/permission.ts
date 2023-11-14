@@ -9,7 +9,49 @@ interface PermissionData {
 
 export class Permission {
     public static Data: {
-        [key in PermissionString]: PermissionData;
+        MODERATE_MEMBERS: { displayName(langCode: LangCode): string };
+        MUTE_MEMBERS: { displayName(langCode: LangCode): string };
+        MOVE_MEMBERS: { displayName(langCode: LangCode): string };
+        MANAGE_ROLES: { displayName(langCode: LangCode): string };
+        MANAGE_NICKNAMES: { displayName(langCode: LangCode): string };
+        SPEAK: { displayName(langCode: LangCode): string };
+        CONNECT: { displayName(langCode: LangCode): string };
+        MENTION_EVERYONE: { displayName(langCode: LangCode): string };
+        ADD_REACTIONS: { displayName(langCode: LangCode): string };
+        CREATE_PUBLIC_THREADS: { displayName(langCode: LangCode): string };
+        VIEW_CHANNEL: { displayName(langCode: LangCode): string };
+        START_EMBEDDED_ACTIVITIES: { displayName(langCode: LangCode): string };
+        MANAGE_CHANNELS: { displayName(langCode: LangCode): string };
+        MANAGE_GUILD: { displayName(langCode: LangCode): string };
+        READ_MESSAGE_HISTORY: { displayName(langCode: LangCode): string };
+        VIEW_GUILD_INSIGHTS: { displayName(langCode: LangCode): string };
+        USE_APPLICATION_COMMANDS: { displayName(langCode: LangCode): string };
+        CREATE_INSTANT_INVITE: { displayName(langCode: LangCode): string };
+        USE_EXTERNAL_STICKERS: { displayName(langCode: LangCode): string };
+        DEAFEN_MEMBERS: { displayName(langCode: LangCode): string };
+        SEND_TTS_MESSAGES: { displayName(langCode: LangCode): string };
+        VIEW_AUDIT_LOG: { displayName(langCode: LangCode): string };
+        MANAGE_EMOJIS_AND_STICKERS: { displayName(langCode: LangCode): string };
+        STREAM: { displayName(langCode: LangCode): string };
+        MANAGE_MESSAGES: { displayName(langCode: LangCode): string };
+        CREATE_PRIVATE_THREADS: { displayName(langCode: LangCode): string };
+        REQUEST_TO_SPEAK: { displayName(langCode: LangCode): string };
+        USE_VAD: { displayName(langCode: LangCode): string };
+        SEND_MESSAGES: { displayName(langCode: LangCode): string };
+        SEND_MESSAGES_IN_THREADS: { displayName(langCode: LangCode): string };
+        ADMINISTRATOR: { displayName(langCode: LangCode): string };
+        CHANGE_NICKNAME: { displayName(langCode: LangCode): string };
+        KICK_MEMBERS: { displayName(langCode: LangCode): string };
+        MANAGE_WEBHOOKS: { displayName(langCode: LangCode): string };
+        USE_PRIVATE_THREADS: { displayName(langCode: LangCode): string };
+        USE_PUBLIC_THREADS: { displayName(langCode: LangCode): string };
+        PRIORITY_SPEAKER: { displayName(langCode: LangCode): string };
+        EMBED_LINKS: { displayName(langCode: LangCode): string };
+        BAN_MEMBERS: { displayName(langCode: LangCode): string };
+        MANAGE_THREADS: { displayName(langCode: LangCode): string };
+        ATTACH_FILES: { displayName(langCode: LangCode): string };
+        USE_EXTERNAL_EMOJIS: { displayName(langCode: LangCode): string };
+        MANAGE_EVENTS: { displayName(langCode: LangCode): string }
     } = {
         ADD_REACTIONS: {
             displayName(langCode: LangCode): string {
