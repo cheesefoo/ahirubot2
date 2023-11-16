@@ -9,9 +9,9 @@ export class Relay {
     public tldex;
     public subscribedVideos = [];
     public shouldRelay: Boolean = true;
-    // private broadcastCh = '722257568361087057';
+    private broadcastCh = '722257568361087057';
     public blacklist : string[] = ['黒瀬浩介 / Kurose Kousuke']
-    private broadcastCh = '963848133475967086';//test
+    // private broadcastCh = '963848133475967086';//test
     private lastUpdateReceived;
 
     constructor(private client: Client) {
