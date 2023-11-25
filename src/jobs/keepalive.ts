@@ -20,11 +20,12 @@ export class Keepalive implements Job {
 
 
     public async run(): Promise<void> {
+        let auth = 'Bearer ' + process.env.render_api_key
         const options = {
             method: 'GET',
             headers: {
                 accept: 'application/json',
-                authorization: 'Bearer rnd_g3QzXMW3bOT7o2q8NsK0CRWc7H0M'
+                authorization: auth
             }
         };
 
