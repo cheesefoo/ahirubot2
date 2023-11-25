@@ -1,7 +1,7 @@
-import https from 'https';
 import {createRequire} from 'node:module';
 import {Job} from './job';
 import {Client} from "discord.js";
+import {Logger} from "../services";
 
 const require = createRequire(import.meta.url);
 
@@ -13,30 +13,26 @@ export class Keepalive implements Job {
     public schedule: string = Config.jobs.keepalive.schedule;
     public log: boolean = Config.jobs.keepalive.log;
 
-    private url = `https://api.render.com/v1/services/srv-cl9c3lavokcc73efgo2g`
+    private url = `https://api.render.com`
 
     constructor(private client: Client) {
     }
 
 
     public async run(): Promise<void> {
-        const options :  https.RequestOptions = {
-            hostname: this.url,
+        const options = {
             method: 'GET',
-            auth: process.env.render_api_key,
+            headers: {
+                accept: 'application/json',
+                authorization: 'Bearer rnd_g3QzXMW3bOT7o2q8NsK0CRWc7H0M'
+            }
         };
 
-        https.request(options, (res) => {
-            if (res.statusCode == 200) {
-                console.log('RENDER GET OK: 200');
-            } else {
-                console.error(`RENDER GET FAILED: ${res.statusCode}`
-                );
-            }
-        }).on('error', (err) => {
-            console.error('RENDER ERROR MAKING REQ', err.message);
-        });
+        fetch('https://api.render.com/v1/services/srv-cl9c3lavokcc73efgo2g', options)
+            .then(response => response.json())
+            // .then(response => Logger.info(response))
+            .catch(err => Logger.error(err));
+
+
     }
-
-
 }
