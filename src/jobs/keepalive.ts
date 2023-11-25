@@ -2,6 +2,7 @@ import {createRequire} from 'node:module';
 import {Job} from './job';
 import {Client} from "discord.js";
 import {Logger} from "../services";
+import fetch from 'node-fetch';
 
 const require = createRequire(import.meta.url);
 
