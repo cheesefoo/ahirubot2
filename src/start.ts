@@ -44,6 +44,7 @@ import {Relay} from './services/relay';
 import {Trigger} from './triggers';
 import {AMSRTrigger} from './triggers/AMSRTrigger';
 import express from 'express';
+import {Keepalive} from "./jobs/keepalive";
 
 declare global {
     namespace NodeJS {
@@ -134,6 +135,7 @@ async function start(): Promise<void> {
         // new CheckInstagram(client),
         // new CheckTwitter(client),
         new CheckHolodex(client, holodexClient, relayService),
+        new Keepalive(client)
     ];
 
     // const token = process.env.discord_token_test;
