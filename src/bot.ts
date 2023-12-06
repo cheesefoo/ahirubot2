@@ -87,6 +87,7 @@ export class Bot {
         try {
             await this.client.login(token);
         } catch (error) {
+            console.error(error)
             await Logger.error(Logs.error.clientLogin, error);
             return;
         }
