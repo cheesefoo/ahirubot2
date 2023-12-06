@@ -80,17 +80,21 @@ export class Bot {
         this.client.on(Constants.Events.RATE_LIMIT, (rateLimitData: RateLimitData) =>
             this.onRateLimit(rateLimitData)
         );
+        this.client.on(Constants.Events.ERROR,(e)=>this.onError(e));
     }
 
     private async login(token: string): Promise<void> {
         try {
             await this.client.login(token);
         } catch (error) {
-            Logger.error(Logs.error.clientLogin, error);
+            await Logger.error(Logs.error.clientLogin, error);
             return;
         }
     }
 
+    private async onError(error):Promise<void>{
+        await Logger.error(error,error.message)
+    }
     private async onReady(): Promise<void> {
         let userTag = this.client.user?.tag;
         Logger.info(Logs.info.clientLogin.replaceAll('{USER_TAG}', userTag));
