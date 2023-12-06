@@ -30,7 +30,8 @@ export class Keepalive implements Job {
             }
         };
 
-        fetch('https://api.render.com/v1/services/srv-cl9c3lavokcc73efgo2g', options)
+        let url = `https://api.render.com/v1/services/${process.env.render_id}`;
+        fetch(url, options)
             .then(response => response.json())
             // .then(response => Logger.info(response))
             .catch(err => Logger.error(err));
