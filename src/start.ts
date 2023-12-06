@@ -162,10 +162,10 @@ async function start(): Promise<void> {
         process.exit();
     }
 
-    let webhookController = new WebhookEndpoint(client);
-    let api = new Api([webhookController]);
+    // let webhookController = new WebhookEndpoint(client);
+    // let api = new Api([webhookController]);
 
-    await api.start();
+    // await api.start();
 
     let app = express();
     let listen = util.promisify(app.listen.bind(app));
