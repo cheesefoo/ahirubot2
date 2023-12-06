@@ -45,6 +45,8 @@ import {Trigger} from './triggers';
 import {AMSRTrigger} from './triggers/AMSRTrigger';
 import express from 'express';
 import {Keepalive} from "./jobs/keepalive";
+import {WebhookEndpoint} from "./controllers";
+import {Api} from "./api";
 
 declare global {
     namespace NodeJS {
@@ -160,15 +162,17 @@ async function start(): Promise<void> {
         process.exit();
     }
 
-    // let webhookController = new WebhookEndpoint(client);
-    // let api = new Api([webhookController]);
+    let webhookController = new WebhookEndpoint(client);
+    let api = new Api([webhookController]);
 
-    // await api.start();
+    await api.start();
 
     let app = express();
     let listen = util.promisify(app.listen.bind(app));
-    await listen(Config.api.port);
-    Logger.info(Logs.info.apiStarted.replaceAll('{PORT}', Config.api.port));
+    // let port = Config.api.port;
+    let port = process.env.port
+    await listen(port);
+    Logger.info(Logs.info.apiStarted.replaceAll('{PORT}', port));
 
     await bot.start();
 }
